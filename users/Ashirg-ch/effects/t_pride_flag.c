@@ -20,20 +20,20 @@ RGB_MATRIX_EFFECT(T_PRIDE_FLAG)
 
 /** A static light effect that displays the transgender pride flag.
  * 
- * This effect assumes that the keyboard has at least five columns.
- * Any further columns will be ignored (turned off), only the upper five will be activated.
+ * This effect assumes that the keyboard has at least five rows.
+ * Any further rows will be ignored (turned off), only the upper five will be activated.
  * 
  * TODO: Test this implementation
  * 
  */
-static bool T_PRIDE_FLAG(uint8_t led_min, uint8_t led_max) {
+static bool T_PRIDE_FLAG(effect_params_t* params) {
 	RGB_MATRIX_USE_LIMITS(led_min, led_max);
     for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
         for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
             uint8_t index = g_led_config.matrix_co[row][col];
 
             if (index >= led_min && index < led_max && index != NO_LED) {
-				switch (col) {
+				switch (row) {
 					case 0:
 					case 4:
 						rgb_matrix_set_color(index, 0x5B, 0xCE, 0xFA);
@@ -44,7 +44,7 @@ static bool T_PRIDE_FLAG(uint8_t led_min, uint8_t led_max) {
 						break;
 					case 2:
 						rgb_matrix_set_color(index, RGB_WHITE);
-						break;
+                        break;
 					default:
 						rgb_matrix_set_color(index, RGB_BLACK);
 						break;
@@ -52,7 +52,7 @@ static bool T_PRIDE_FLAG(uint8_t led_min, uint8_t led_max) {
             }
         }
     }
-    return false;
+    return rgb_matrix_check_finished_leds(led_max);
 }
 
 #endif // RGB_MATRIX_CUSTOM_EFFECT_IMPLS
