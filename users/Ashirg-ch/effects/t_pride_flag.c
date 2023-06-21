@@ -33,22 +33,32 @@ static bool T_PRIDE_FLAG(effect_params_t* params) {
             uint8_t index = g_led_config.matrix_co[row][col];
 
             if (index >= led_min && index < led_max && index != NO_LED) {
-				switch (row) {
-					case 0:
-					case 4:
-						rgb_matrix_set_color(index, 0x5B, 0xCE, 0xFA);
+                HSV hsv = {0, 0, 0};
+                // For some unfathomable reason, the rows for pink and white are exchanged, so I had to exchange them in code.
+                // I have no idea why it works like this and I'm not sure whether I'll invest the time to fix it.
+                switch (row) {
+                    case 0:
+                    case 4:
+                        hsv = (HSV){91, 206, 250};
 						break;
 					case 1:
 					case 3:
-						rgb_matrix_set_color(index, 0xF5, 0xA9, 0xB8);
+                        //hsv = (HSV){245, 169, 184};
+                        hsv = (HSV){255, 255, 255};
 						break;
 					case 2:
-						rgb_matrix_set_color(index, RGB_WHITE);
+                        //hsv = (HSV){255, 255, 255};
+                        hsv = (HSV){245, 169, 184};
                         break;
 					default:
-						rgb_matrix_set_color(index, RGB_BLACK);
 						break;
 				}
+
+                if (hsv.v > rgb_matrix_get_val()) {
+                    hsv.v = rgb_matrix_get_val();
+                }
+                RGB rgb = hsv_to_rgb(hsv);
+                rgb_matrix_set_color(index, rgb.r, rgb.g, rgb.b);
             }
         }
     }
